@@ -1,0 +1,185 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script lang="ts">
+        function advancedReplace(pre, post, splitter) {
+            const tf = document.getElementById("text")
+            let { selectionStart, selectionEnd } = tf
+            const text = tf.value
+            const lines = text.split("\n")
+            const lineStart = getLineStart(lines, selectionStart, selectionEnd)
+            console.log(lineStart);
+            if(!post){
+                if(!lines[lineStart.lineIndex].startsWith(pre)){
+                    lines[lineStart.lineIndex] = pre + lines[lineStart.lineIndex]
+                    selectionEnd += pre.length
+                }
+            }else{
+                const selectedLength = selectionEnd - selectionStart
+                if(selectedLength <= lines[lineStart.lineIndex].length){
+                    let line = lines[lineStart.lineIndex]
+
+                    let newLine = ""
+                    newLine += line.substr(0, selectionStart-lineStart.charIndex)
+                    newLine += pre + line.substr(selectionStart-lineStart.charIndex, selectedLength) + post
+                    console.log(line, newLine, selectionStart, lineStart.charIndex)
+                    newLine += line.substr(selectionEnd-lineStart.charIndex)
+                    lines[lineStart.lineIndex] = newLine
+                    selectionEnd += pre.length + post.length
+                }
+            }
+            //get the scrolePosition from top
+            const top = tf.scrollTop
+            // set`s the new value of the Textfield
+            tf.value = lines.join("\n")
+            // set's the scrollPosition from bevore
+            ft.scrollTop = top
+            // set's the Page focus to the Textfield
+            tf.focus()
+            // set's the previous selection
+            tf.selectionEnd = selectionEnd
+            tf.selectionStart = selectionEnd
+        }
+        function getLineStart(lines, selectionStart, selectionEnd){
+            let lineStart = {lineIndex: 0, charIndex: 0}
+            let blocked = false
+            lines.forEach((line, index) => {
+                if(!blocked && selectionStart > lineStart.charIndex + line.length ){
+                    lineStart.lineIndex = index + 1
+                    lineStart.charIndex += line.length + 1 //linebreaks
+                }else{
+                    blocked = true
+                }
+            });
+            return lineStart
+        }
+        function smallerHeader(){
+            const tf = document.getElementById("text")
+            const { selectionStart, selectionEnd } = tf
+            const text = tf.value
+            const lines = text.split("\n")
+            const lineStart = getLineStart(lines, selectionStart, selectionEnd)
+            console.log(lineStart);
+            if(lines[lineStart.lineIndex].startsWith("#") && !lines[lineStart.lineIndex].startsWith("######")){
+                lines[lineStart.lineIndex] = "#"+ lines[lineStart.lineIndex]
+            }
+
+            tf.value = lines.join("\n")
+            tf.focus()
+            tf.selectionEnd = selectionEnd
+        }
+    </script>
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+
+        body {
+            display: grid;
+            grid-template-rows: 1fr 9fr;
+            padding: 1rem;
+        }
+
+        .BTN_Container {
+            display: flex;
+            justify-content: space-evenly;
+            padding: 1em;
+        }
+
+        .BTN_Container input {
+            padding: 1em;
+            font-size: 1.5em;
+            border-radius: 1rem;
+        }
+        input:active{
+            filter: brightness(0.8);
+            outline: 2px solid white;
+            outline-offset: .1em;
+        }
+
+        textarea {
+            border: 3px solid black;
+            padding: 1em;
+            font-size: 1.5em;
+            line-height: 1.6em;
+            transition: outline 300ms;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="BTN_Container">
+        <div>
+            <input type="button" value="make Header" onclick="advancedReplace('# ', '')">
+            <input type="button" value="smaller Header" onclick="smallerHeader()">
+        </div>
+        <input type="button" value="make ul" onclick="advancedReplace('* ', '')">
+        <input type="button" value="make CODE" onclick="advancedReplace('`', '`')">
+    </div>
+    <textarea name="Hausordnung" id="text" cols="30" rows="10">SHKJdhfjdkfd
+sdfg
+dsfg
+asdf
+sefg
+edfg
+tg
+sdfg
+dsfg
+asdf
+sefg
+edfg
+tg
+sdfg
+dsfg
+asdf
+sefg
+edfg
+tg
+sdfg
+dsfg
+asdf
+sefg
+edfg
+tg
+sdfg
+dsfg
+asdf
+sefg
+edfg
+tg
+sdfg
+dsfg
+asdf
+sefg
+edfg
+tg
+sdfg
+dsfg
+asdf
+sefg
+edfg
+tg
+sdfg
+dsfg
+asdf
+sefg
+edfg
+tg
+sdfg
+dsfg
+asdf
+sefg
+edfg
+tg
+sdfg
+dsfg
+asdf
+sefg
+edfg
+tg
+</textarea>
+</body>
+
+</html>
